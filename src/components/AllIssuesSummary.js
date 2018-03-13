@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Table from 'antd/lib/table';
 
-class IssuesSummary extends Component {
+class AllIssuesSummary extends Component {
   render() {
     const columns = [
       {
@@ -28,6 +28,12 @@ class IssuesSummary extends Component {
         key: 'avg_days_to_close',
         sorter: (a, b) => a.avg_days_to_close - b.avg_days_to_close,
       },
+      {
+        title: '# Tickets Reopened',
+        dataIndex: 'reopened_count',
+        key: 'reopened_count',
+        sorter: (a, b) => a.reopened_count - b.reopened_count,
+      },
     ];
 
     return (
@@ -38,4 +44,4 @@ class IssuesSummary extends Component {
   }
 }
 
-export default IssuesSummary;
+export default AllIssuesSummary;
