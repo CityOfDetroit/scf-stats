@@ -1,44 +1,37 @@
 import React, { Component } from 'react';
-import Table from 'antd/lib/table';
+import _ from 'lodash';
+import numeral from 'numeral';
+import Card, { CardHeader, CardContent } from 'material-ui/Card';
+
+import AllIssuesTable from './AllIssuesTable';
 
 class AllIssuesSummary extends Component {
   render() {
-    const columns = [
-      {
-        title: 'Issue Type',
-        dataIndex: 'request_type_title',
-        key: 'request_type_title',
-      }, 
-      {
-        title: '# Tickets Created',
-        dataIndex: 'created_count',
-        key: 'created_count',
-        sorter: (a, b) => a.created_count - b.created_count,
-        defaultSortOrder: 'descend',
-      },
-      {
-        title: '# Tickets Closed',
-        dataIndex: 'closed_count',
-        key: 'closed_count',
-        sorter: (a, b) => a.closed_count - b.closed_count,
-      },
-      {
-        title: 'Average Days to Close',
-        dataIndex: 'avg_days_to_close',
-        key: 'avg_days_to_close',
-        sorter: (a, b) => a.avg_days_to_close - b.avg_days_to_close,
-      },
-      {
-        title: '# Tickets Reopened',
-        dataIndex: 'reopened_count',
-        key: 'reopened_count',
-        sorter: (a, b) => a.reopened_count - b.reopened_count,
-      },
-    ];
-
     return (
       <div>
-        <Table rowKey="request_type_title" dataSource={this.props.issues} columns={columns} pagination={false} />
+        <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', }}>
+          <Card style={{ margin: '1em' }}>
+            <CardHeader title="Total tickets created" />
+            <CardContent style={{ fontSize: '1.5em' }}>
+              {numeral(_.sumBy(this.props.issues, function(i) { return parseInt(i.created_count, 10); })).format('0,0')}
+            </CardContent>
+          </Card>
+          <Card style={{ margin: '1em' }}>
+            <CardHeader title="Total tickets closed" />
+            <CardContent style={{ fontSize: '1.5em' }}>
+              <span style={{ marginRight: '.25em' }}>{numeral(_.sumBy(this.props.issues, function(i) { return parseInt(i.closed_count, 10); })).format('0,0')}</span>
+              ({_.round((_.sumBy(this.props.issues, function(i) { return parseInt(i.closed_count, 10); })/_.sumBy(this.props.issues, function(i) { return parseInt(i.created_count, 10); }))*100, 2)}%)
+            </CardContent>
+          </Card>
+          <Card style={{ margin: '1em' }}>
+            <CardHeader title="Total tickets reopened" />
+            <CardContent style={{ fontSize: '1.5em' }}>
+              <span style={{ marginRight: '.25em' }}>{numeral(_.sumBy(this.props.issues, function(i) { return parseInt(i.reopened_count, 10); })).format('0,0')}</span>
+              ({_.round((_.sumBy(this.props.issues, function(i) { return parseInt(i.reopened_count, 10); })/_.sumBy(this.props.issues, function(i) { return parseInt(i.created_count, 10); }))*100, 2)}%)
+            </CardContent>
+          </Card>
+        </div>
+        <AllIssuesTable issues={this.props.issues} />
       </div>
     );
   }

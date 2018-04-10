@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
-import { Select } from 'antd';
-const Option = Select.Option;
+import { FormControl } from 'material-ui/Form';
+import Select from 'material-ui/Select';
+import { MenuItem } from 'material-ui/Menu';
 
 class IssuePicker extends Component {
   render() {
     return (
-      <div>
+      <FormControl style={{ marginRight: '2em' }}>
         <Select
-          defaultValue="*"
+          value={this.props.default}
           onChange={this.props.onChange}
-          size="large"
-          style={{ width: 400, margin: '1em' }}>
-          <Option value="*">All Issues Types</Option>
+          style={{ minWidth: 300 }}>
+          <MenuItem value="*">All Issue Types</MenuItem>
           {this.props.issues.map(i => (
-            <Option key={i.request_type_title} value={i.request_type_title}>{i.request_type_title}</Option>
+            <MenuItem key={i.request_type_title} value={i.request_type_title}>{i.request_type_title}</MenuItem>
           ))}
         </Select>
-      </div>
+      </FormControl>
     );
   }
 }

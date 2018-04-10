@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import { Select } from 'antd';
-const Option = Select.Option;
+import Radio, { RadioGroup } from 'material-ui/Radio';
+import { FormControl, FormControlLabel } from 'material-ui/Form';
 
 class DatePicker extends Component {
   render() {
     return (
-      <div>
-        <Select
-          defaultValue={this.props.weeks.toString()}
+      <FormControl component="fieldset">
+        <RadioGroup
+          name="timeframe"
+          value={this.props.weeks.toString()}
           onChange={this.props.onChange}
-          size="large"
-          style={{ width: 150, margin: '1em' }}>
-          <Option value="1">Last week</Option>
-          <Option value="3">Last 3 weeks</Option>
-          <Option value="6">Last 6 weeks</Option>
-        </Select>
-      </div>
+          style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+          <FormControlLabel value="1" control={<Radio />} label="Last week" />
+          <FormControlLabel value="3" control={<Radio />} label="Last 3 weeks" />
+          <FormControlLabel value="6" control={<Radio />} label="Last 6 weeks" />
+        </RadioGroup>
+      </FormControl>
     );
   }
 }

@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
+import Typography from 'material-ui/Typography';
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
 
 import './styles/App.css';
-
 import IssuePicker from './components/IssuePicker';
 import DatePicker from './components/DatePicker';
 import AllIssuesSummary from './components/AllIssuesSummary';
 import IssueSummary from './components/IssueSummary';
+import TopNav from './components/TopNav';
 
 class App extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props);
 
     this.state = {
       defaultWeeks: 3,
@@ -26,24 +29,22 @@ class App extends Component {
     this.handleIssueTypeChange = this.handleIssueTypeChange.bind(this);
   }
 
-  handleDateChange(value) {
-    if (value) {
-      console.log('changed date');
-      this.fetchAllIssueTypes(value);
-      this.setState({ defaultWeeks: value });
+  handleDateChange = event => {
+    if (event.target.value) {
+      this.fetchAllIssueTypes(event.target.value);
+      this.setState({ defaultWeeks: event.target.value });
     }
   }
 
-  handleIssueTypeChange(value) {
-    if (value) {
-      console.log(`selected ${value}`);
-      this.setState({ defaultIssueType: value });
+  handleIssueTypeChange = event => {
+    if (event.target.value) {
+      this.setState({ defaultIssueType: event.target.value });
     }
   }
 
   /**
    * Query Improve Detroit for all issue types submitted during a certain timeframe and get summary counts
-   * @param {int} numWeeks 
+   * @param {int} - number of weeks 
    * @returns {promise}
    */
   fetchAllIssueTypes(numWeeks) {
@@ -69,18 +70,32 @@ class App extends Component {
   }
 
   render() {
+    let currentTypeSummary = _.find(this.state.data, ['request_type_title', this.state.defaultIssueType]);
+
     return (
-      <div style={{ margin: '1.5em', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <h1>Analyze Improve Detroit Issues...</h1>
+      <div>
+        <TopNav />
         { this.state.fetchedData ? 
-          <div>
-            <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-              <IssuePicker issues={this.state.data} onChange={this.handleIssueTypeChange} />
-              <DatePicker weeks={this.state.defaultWeeks} onChange={this.handleDateChange} />
-            </div>
-            { this.state.defaultIssueType === '*' ? <AllIssuesSummary issues={this.state.data} /> : <IssueSummary type={this.state.defaultIssueType} start={this.state.startDate} end={this.state.endDate} /> }
+          <div style={{ flexGrow: 1 }}>
+            <AppBar position="static" color="default">
+              <Toolbar style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', alignItems: 'flex-start', marginTop: '1em', marginBottom: '1em' }}>
+                <div>
+                  <Typography variant="title" color="inherit">
+                    Pick an issue type and timeframe for analysis:
+                  </Typography>
+                </div>
+                <div style={{ marginTop: '1em' }}>
+                  <IssuePicker default={this.state.defaultIssueType} issues={this.state.data} onChange={this.handleIssueTypeChange} />
+                  <DatePicker weeks={this.state.defaultWeeks} onChange={this.handleDateChange} />
+                </div>
+              </Toolbar>
+            </AppBar>
+            <Typography variant="title" color="inherit" style={{ margin: '1em' }}>
+              Showing <strong>{ this.state.defaultIssueType === '*' ? 'All Issue Types' : `${this.state.defaultIssueType}` }</strong> from {moment(this.state.startDate, "YYYY-MM-DD").format("MM-DD-YY")} to {moment(this.state.endDate, "YYYY-MM-DD").format("MM-DD-YY")}
+            </Typography>
           </div>
         : <p>Loading...</p> }
+        { this.state.fetchedData && this.state.defaultIssueType === '*' ? <AllIssuesSummary issues={this.state.data} /> : <IssueSummary type={this.state.defaultIssueType} summary={currentTypeSummary} start={this.state.startDate} end={this.state.endDate} /> }
       </div>
     );
   }
