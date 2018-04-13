@@ -95,7 +95,8 @@ class App extends Component {
             </Typography>
           </div>
         : <p>Loading...</p> }
-        { this.state.fetchedData && this.state.defaultIssueType === '*' ? <AllIssuesSummary issues={this.state.data} /> : <IssueSummary type={this.state.defaultIssueType} summary={currentTypeSummary} start={this.state.startDate} end={this.state.endDate} /> }
+        { this.state.fetchedData && this.state.defaultIssueType === '*' ? <AllIssuesSummary issues={this.state.data} /> : null }
+        { this.state.fetchedData && this.state.defaultIssueType !== '*' && currentTypeSummary ? <IssueSummary type={this.state.defaultIssueType} summary={currentTypeSummary} start={this.state.startDate} end={this.state.endDate} /> : null }
       </div>
     );
   }
