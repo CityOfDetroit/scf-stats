@@ -1,30 +1,110 @@
 import React, { Component } from 'react';
+import ReactHighcharts from 'react-highcharts';
 import _ from 'lodash';
-import { BarChart, Bar, XAxis, YAxis, Label } from 'recharts';
+import Card, { CardHeader, CardContent } from 'material-ui/Card';
+import moment from 'moment';
 
 class IssueChart extends Component {
-  /**
-   * Get unique values for a specific key and sum their occurances
-   * @param {array} data - 311 tickets json
-   * @param {string} key 
-   * @returns {array} - array of objects like { name: '', value: 0 }
-   */
-  groupData(data, key) {
-    return _.chain(data)
-      .groupBy(d => d[key])
-      .map((v, k) => ({ name: k, value: v.length }))
-      .value();
-  }
-
   render() {
+    let byPlaceConfig = {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: ''
+      },
+      xAxis: {
+        categories: Object.keys(_.countBy(this.props.data, 'council_district')),
+        crosshair: true,
+        title: {
+          text: 'Council District'
+        }
+      },
+      yAxis: {
+        min: 0,
+        title: {
+          text: 'Tickets'
+        }
+      },
+      series: [{
+        data: Object.values(_.countBy(this.props.data, 'council_district'))
+      }],
+      tooltip: {
+        formatter: function() {
+          return this.y + ' tickets opened in District ' + this.x
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      credits: {
+        enabled: false
+      },
+      colors: ['#3f51b5']
+    };
+
+    let createdDays = _.groupBy(this.props.data, function(d) {
+      return moment(d['created_at']).startOf('day').format('MM-DD-YYYY');
+    });
+
+    let res = _.map(createdDays, function(group, day) {
+      return {
+        day: day,
+        opened: group.length
+      }
+    });
+
+    res = _.sortBy(res, 'day');
+
+    let byDateConfig = {
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: ''
+      },
+      yAxis: {
+        min: 0,
+        title: {
+          text: 'Tickets'
+        }
+      },
+      xAxis: {
+        categories: _.map(res, 'day')
+      },
+      series: [{
+        name: 'Opened',
+        data: _.map(res, 'opened')
+      }],
+      tooltip: {
+        formatter: function() {
+          return this.y + ' tickets opened on ' + this.x
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      credits: {
+        enabled: false
+      },
+      colors: ['#f50057']
+    };
+
     return (
-      <BarChart width={730} height={250} data={this.groupData(this.props.data, 'council_district')} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-        <XAxis dataKey="name">
-          <Label value="Council District" offset={0} position="insideBottom" />
-        </XAxis>
-        <YAxis />
-        <Bar dataKey="value" fill="#8884d8" />
-      </BarChart>
+      <div>
+        <Card style={{ margin: '1em' }} >
+          <CardHeader title="Tickets created by date" />
+          <CardContent>
+            <ReactHighcharts config={byDateConfig}></ReactHighcharts>
+          </CardContent>
+        </Card>
+        <Card style={{ margin: '1em' }} >
+          <CardHeader title="Tickets created by Council District" />
+          <CardContent>
+            <ReactHighcharts config={byPlaceConfig}></ReactHighcharts>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 }
