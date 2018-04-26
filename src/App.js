@@ -77,7 +77,7 @@ class App extends Component {
         <TopNav />
         { this.state.fetchedData ? 
           <div style={{ flexGrow: 1 }}>
-            <AppBar position="static" color="default">
+            <AppBar position="static" elevation={1} color="default">
               <Toolbar style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', alignItems: 'flex-start', marginTop: '1em', marginBottom: '1em' }}>
                 <div>
                   <Typography variant="title" color="inherit">
@@ -95,7 +95,11 @@ class App extends Component {
             </Typography>
           </div>
         : <p>Loading...</p> }
-        { this.state.fetchedData && this.state.defaultIssueType === '*' ? <AllIssuesSummary issues={this.state.data} /> : <IssueSummary type={this.state.defaultIssueType} summary={currentTypeSummary} start={this.state.startDate} end={this.state.endDate} /> }
+        { this.state.fetchedData && this.state.defaultIssueType === '*' ? <AllIssuesSummary issues={this.state.data} /> : null }
+        { this.state.fetchedData && this.state.defaultIssueType !== '*' && currentTypeSummary ? <IssueSummary type={this.state.defaultIssueType} summary={currentTypeSummary} start={this.state.startDate} end={this.state.endDate} /> : null }
+        <Typography variant="body1" style={{ margin: '1em', color: '#878787' }}>
+          (Source: <a href="https://data.detroitmi.gov/d/fjru-bz8m">Improve Detroit Issues</a>)
+        </Typography>
       </div>
     );
   }

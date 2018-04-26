@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const Helpers = {
     /** Issue types and their Service Level Agreements for number of days to close */
     slas: {
@@ -20,7 +22,7 @@ const Helpers = {
     "Running Water in a Home or Building": 4,
     "Squatters Issue": 7,
     "Squatters - Fraud Investigation": 45,
-    "Street Light Out": null,
+    "Street Light Out": 7,
     "Street Light Pole Down": 5,
     "Street Light / Street Light Pole Major Repair": 30,
     "Traffic Sign Issue": 7,
@@ -30,6 +32,19 @@ const Helpers = {
     "Other - Not within City jurisdiction": null,
     "Other - Not within scope of City services": null,
     "Other - Referred to other City Department": null,
+  },
+
+    /**
+   * Get unique values for a specific key and sum their occurances
+   * @param {array} data - 311 tickets json
+   * @param {string} key - object key in tickets json to group by
+   * @returns {array} - array of objects like { name: '', value: 0 }
+   */
+  groupData: function(data, key) {
+    return _.chain(data)
+      .groupBy(d => d[key])
+      .map((v, k) => ({ name: k, value: v.length }))
+      .value();
   }
 };
 
