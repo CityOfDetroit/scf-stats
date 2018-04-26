@@ -48,23 +48,31 @@ class IssueSummary extends Component {
         {this.props.summary ?
           <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', }}>
             <Card style={{ margin: '1em' }}>
-              <CardHeader title="Tickets created" />
-              <CardContent style={{ fontSize: '1.5em' }}>
+              <CardHeader title="Tickets opened" />
+              <CardContent style={{ fontSize: '1.5em', fontWeight: 700 }}>
                 {this.props.summary.created_count}
               </CardContent>
             </Card>
             <Card style={{ margin: '1em' }}>
               <CardHeader title="Tickets closed" />
               <CardContent style={{ fontSize: '1.5em' }}>
-                <span style={{ marginRight: '.25em' }}>{this.props.summary.closed_count}</span>
-                ({_.round((this.props.summary.closed_count/this.props.summary.created_count)*100, 2)}%)
+                <span style={{ marginRight: '.25em', fontWeight: 700 }}>
+                  {this.props.summary.closed_count}
+                </span>
+                <span style={{ color: '#878787' }}>
+                  ({_.round((this.props.summary.closed_count/this.props.summary.created_count)*100, 2)}%)
+                </span>
               </CardContent>
             </Card>
             <Card style={{ margin: '1em' }}>
               <CardHeader title="Tickets reopened" />
               <CardContent style={{ fontSize: '1.5em' }}>
-                <span style={{ marginRight: '.25em' }}>{this.props.summary.reopened_count}</span>
-                ({_.round((this.props.summary.reopened_count/this.props.summary.created_count)*100, 2)}%)
+                <span style={{ marginRight: '.25em', fontWeight: 700 }}>
+                  {this.props.summary.reopened_count}
+                </span>
+                <span style={{ color: '#878787' }}>
+                  ({_.round((this.props.summary.reopened_count/this.props.summary.created_count)*100, 2)}%)
+                </span>
               </CardContent>
             </Card>
           </div>

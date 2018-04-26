@@ -22,7 +22,7 @@ const Helpers = {
     "Running Water in a Home or Building": 4,
     "Squatters Issue": 7,
     "Squatters - Fraud Investigation": 45,
-    "Street Light Out": null,
+    "Street Light Out": 7,
     "Street Light Pole Down": 5,
     "Street Light / Street Light Pole Major Repair": 30,
     "Traffic Sign Issue": 7,

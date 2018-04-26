@@ -44,7 +44,7 @@ class IssueChart extends Component {
     };
 
     let createdDays = _.groupBy(this.props.data, function(d) {
-      return moment(d['created_at']).startOf('day').format('MM-DD-YYYY');
+      return moment(d['created_at']).format('MM-DD-YYYY');
     });
 
     let res = _.map(createdDays, function(group, day) {
@@ -93,13 +93,13 @@ class IssueChart extends Component {
     return (
       <div>
         <Card style={{ margin: '1em' }} >
-          <CardHeader title="Tickets created by date" />
+          <CardHeader title="Tickets by date opened" />
           <CardContent>
             <ReactHighcharts config={byDateConfig}></ReactHighcharts>
           </CardContent>
         </Card>
         <Card style={{ margin: '1em' }} >
-          <CardHeader title="Tickets created by Council District" />
+          <CardHeader title="Tickets by Council District" />
           <CardContent>
             <ReactHighcharts config={byPlaceConfig}></ReactHighcharts>
           </CardContent>

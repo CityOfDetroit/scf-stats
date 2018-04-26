@@ -11,23 +11,31 @@ class AllIssuesSummary extends Component {
       <div>
         <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', }}>
           <Card style={{ margin: '1em' }}>
-            <CardHeader title="Total tickets created" />
-            <CardContent style={{ fontSize: '1.5em' }}>
+            <CardHeader title="Tickets opened" />
+            <CardContent style={{ fontSize: '1.5em', fontWeight: 700 }}>
               {numeral(_.sumBy(this.props.issues, function(i) { return parseInt(i.created_count, 10); })).format('0,0')}
             </CardContent>
           </Card>
           <Card style={{ margin: '1em' }}>
-            <CardHeader title="Total tickets closed" />
+            <CardHeader title="Tickets closed" />
             <CardContent style={{ fontSize: '1.5em' }}>
-              <span style={{ marginRight: '.25em' }}>{numeral(_.sumBy(this.props.issues, function(i) { return parseInt(i.closed_count, 10); })).format('0,0')}</span>
-              ({_.round((_.sumBy(this.props.issues, function(i) { return parseInt(i.closed_count, 10); })/_.sumBy(this.props.issues, function(i) { return parseInt(i.created_count, 10); }))*100, 2)}%)
+              <span style={{ marginRight: '.25em', fontWeight: 700 }}>
+                {numeral(_.sumBy(this.props.issues, function(i) { return parseInt(i.closed_count, 10); })).format('0,0')}
+              </span>
+              <span style={{ color: '#878787' }}>
+                ({_.round((_.sumBy(this.props.issues, function(i) { return parseInt(i.closed_count, 10); })/_.sumBy(this.props.issues, function(i) { return parseInt(i.created_count, 10); }))*100, 2)}%)
+              </span>
             </CardContent>
           </Card>
           <Card style={{ margin: '1em' }}>
-            <CardHeader title="Total tickets reopened" />
+            <CardHeader title="Tickets reopened" />
             <CardContent style={{ fontSize: '1.5em' }}>
-              <span style={{ marginRight: '.25em' }}>{numeral(_.sumBy(this.props.issues, function(i) { return parseInt(i.reopened_count, 10); })).format('0,0')}</span>
-              ({_.round((_.sumBy(this.props.issues, function(i) { return parseInt(i.reopened_count, 10); })/_.sumBy(this.props.issues, function(i) { return parseInt(i.created_count, 10); }))*100, 2)}%)
+              <span style={{ marginRight: '.25em', fontWeight: 700 }}>
+                {numeral(_.sumBy(this.props.issues, function(i) { return parseInt(i.reopened_count, 10); })).format('0,0')}
+              </span>
+              <span style={{ color: '#878787' }}>
+                ({_.round((_.sumBy(this.props.issues, function(i) { return parseInt(i.reopened_count, 10); })/_.sumBy(this.props.issues, function(i) { return parseInt(i.created_count, 10); }))*100, 2)}%)
+              </span>
             </CardContent>
           </Card>
         </div>
