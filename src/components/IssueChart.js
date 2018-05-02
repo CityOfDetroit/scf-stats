@@ -22,6 +22,7 @@ class IssueChart extends Component {
       },
       yAxis: {
         min: 0,
+        allowDecimals: false,
         title: {
           text: 'Tickets'
         }
@@ -65,6 +66,7 @@ class IssueChart extends Component {
       },
       yAxis: {
         min: 0,
+        allowDecimals: false,
         title: {
           text: 'Tickets'
         }

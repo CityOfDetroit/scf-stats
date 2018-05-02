@@ -3,7 +3,7 @@ import _ from 'lodash';
 const Helpers = {
     /** Issue types and their Service Level Agreements for number of days to close */
     slas: {
-    "Abandoned Vehicles": 5,
+    "Abandoned Vehicles": 7,
     "Blocked Catch Basin": 15,
     "Cemetery Issue": 5,
     "Curbside Solid Waste Issue": 10,
@@ -34,8 +34,8 @@ const Helpers = {
     "Other - Referred to other City Department": null,
   },
 
-    /**
-   * Get unique values for a specific key and sum their occurances
+   /**
+   * Get unique values for a specific key and sum their occurances for making charts
    * @param {array} data - 311 tickets json
    * @param {string} key - object key in tickets json to group by
    * @returns {array} - array of objects like { name: '', value: 0 }
@@ -45,6 +45,25 @@ const Helpers = {
       .groupBy(d => d[key])
       .map((v, k) => ({ name: k, value: v.length }))
       .value();
+  },
+
+  /**
+   * Iterate through issues and check if days to close is within their SLA
+   * @param {array} data - 311 ticket json
+   * @param {string} type - request type title, matches text in slas
+   * @returns {array} - 311 ticket json with new property "closed_within_sla" if ticket is closed
+   */
+  checkSla: function(data, type) {
+    let sla = this.slas[type];
+    data.map(d => {
+      if (d.days_to_close < sla) {
+        d.closed_within_sla = 1;
+      }
+
+      return d;
+    });
+
+    return data;
   }
 };
 
