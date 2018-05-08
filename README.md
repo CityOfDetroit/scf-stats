@@ -2,7 +2,7 @@
 
 A web app for analyzing Improve Detroit 311 tickets. 
 
-Built with [Create React App](https://github.com/facebook/create-react-app), [material design](https://material-ui-next.com/) UI components, and [Improve Detroit Issues](https://data.detroitmi.gov/d/fjru-bz8m) open data.
+Built with [Create React App](https://github.com/facebook/create-react-app), [Material-UI](https://material-ui-next.com/) components, and [Improve Detroit Issues](https://data.detroitmi.gov/d/fjru-bz8m) open data.
 
 # Install
 
