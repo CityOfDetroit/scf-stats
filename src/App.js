@@ -11,6 +11,7 @@ import DatePicker from './components/DatePicker';
 import AllIssuesSummary from './components/AllIssuesSummary';
 import IssueSummary from './components/IssueSummary';
 import TopNav from './components/TopNav';
+import Helpers from './helpers';
 
 class App extends Component {
   constructor(props) {
@@ -22,7 +23,9 @@ class App extends Component {
       startDate: '',
       endDate: '',
       data: [],
+      slaData: [],
       fetchedData: false,
+      fetchedSlaData: false,
     }
 
     this.handleDateChange = this.handleDateChange.bind(this);
@@ -31,7 +34,9 @@ class App extends Component {
 
   handleDateChange = event => {
     if (event.target.value) {
-      this.fetchAllIssueTypes(event.target.value);
+      this.fetchIssuesSummary(event.target.value);
+      this.fetchSlas(event.target.value);
+
       this.setState({ defaultWeeks: event.target.value });
     }
   }
@@ -42,15 +47,9 @@ class App extends Component {
     }
   }
 
-  /**
-   * Query Improve Detroit for all issue types submitted during a certain timeframe and get summary counts
-   * @param {int} - number of weeks 
-   * @returns {promise}
-   */
-  fetchAllIssueTypes(numWeeks) {
+  fetchIssuesSummary(numWeeks) {
     let start = moment().subtract(numWeeks, 'week').format('YYYY-MM-DD');
     let end = moment().format('YYYY-MM-DD');
-    console.log(`Fetching data for last ${numWeeks} weeks:`, start, '-', end);
 
     fetch(`https://data.detroitmi.gov/resource/a9kb-mhiu.json?$query=SELECT request_type_title, COUNT(created_at) AS created_count, COUNT(closed_at) AS closed_count, AVG(days_to_close) AS avg_days_to_close, COUNT(reopened_at) as reopened_count WHERE created_at between '${start}' and '${end}' GROUP BY request_type_title`)
     .then(res => res.json())
@@ -65,8 +64,24 @@ class App extends Component {
     .catch(e => console.log(e));
   }
 
+  fetchSlas(numWeeks) {
+    let start = moment().subtract(numWeeks, 'week').format('YYYY-MM-DD');
+    let end = moment().format('YYYY-MM-DD');
+
+    fetch(`https://data.detroitmi.gov/resource/a9kb-mhiu.json?$query=SELECT request_type_title, days_to_close WHERE closed_at is not null and created_at between '${start}' and '${end}' limit 10000`)
+    .then(res => res.json())
+    .then(d => {
+      this.setState({
+        slaData: Helpers.addSla(d),
+        fetchedSlaData: true,
+      });
+    })
+    .catch(e => console.log(e));
+  }
+
   componentDidMount() {
-    this.fetchAllIssueTypes(this.state.defaultWeeks);
+    this.fetchIssuesSummary(this.state.defaultWeeks);
+    this.fetchSlas(this.state.defaultWeeks);
   }
 
   render() {
@@ -95,7 +110,7 @@ class App extends Component {
             </Typography>
           </div>
         : <p>Loading...</p> }
-        { this.state.fetchedData && this.state.defaultIssueType === '*' ? <AllIssuesSummary issues={this.state.data} /> : null }
+        { this.state.fetchedData && this.state.fetchedSlaData && this.state.defaultIssueType === '*' ? <AllIssuesSummary issues={this.state.data} slas={this.state.slaData} /> : null }
         { this.state.fetchedData && this.state.defaultIssueType !== '*' && currentTypeSummary ? <IssueSummary type={this.state.defaultIssueType} summary={currentTypeSummary} start={this.state.startDate} end={this.state.endDate} /> : null }
         <Typography variant="body1" style={{ margin: '1em', color: '#878787' }}>
           (Source: <a href="https://data.detroitmi.gov/d/fjru-bz8m">Improve Detroit Issues</a>)

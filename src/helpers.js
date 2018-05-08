@@ -54,8 +54,8 @@ const Helpers = {
    * @returns {array} - 311 ticket json with new property "closed_within_sla" if ticket is closed
    */
   checkSla: function(data, type) {
-    let sla = this.slas[type];
     data.map(d => {
+      let sla = this.slas[type];
       if (d.days_to_close < sla) {
         d.closed_within_sla = 1;
       }
@@ -64,6 +64,22 @@ const Helpers = {
     });
 
     return data;
+  },
+
+  addSla: function(data) {
+    data.map(d => {
+      let sla = this.slas[d.request_type_title];
+      if (d.days_to_close < sla) {
+        d.closed_within_sla = 1
+      }
+
+      return d;
+    });
+
+    return _.chain(data)
+      .groupBy(d => d['request_type_title'])
+      .map((v, k) => ({ type: k, closed_within_sla: _.sumBy(v, 'closed_within_sla') }))
+      .value();
   }
 };
 

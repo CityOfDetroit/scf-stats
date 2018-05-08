@@ -81,13 +81,13 @@ class IssueSummary extends Component {
           : null }
         {(Helpers.slas[this.props.type] > 0 && this.state.fetchedData) ? 
           <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', }}>
-            <Card style={{ margin: '1em' }}>
+            <Card style={{ margin: '1em', backgroundColor: '#f1f1f1' }}>
               <CardHeader title="Service Level Agreement" />
               <CardContent style={{ fontSize: '1.5em', fontWeight: 700 }}>
                 {Helpers.slas[this.props.type]} days
               </CardContent>
             </Card>
-            <Card style={{ margin: '1em' }}>
+            <Card style={{ margin: '1em', backgroundColor: '#f1f1f1' }}>
               <CardHeader title="Tickets closed within SLA" />
               <CardContent style={{ fontSize: '1.5em', }}>
                 <span style={{ marginRight: '.25em', fontWeight: 700 }}>
