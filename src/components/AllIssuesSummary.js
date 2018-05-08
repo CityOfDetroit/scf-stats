@@ -39,7 +39,7 @@ class AllIssuesSummary extends Component {
             </CardContent>
           </Card>
         </div>
-        <AllIssuesTable issues={this.props.issues} />
+        <AllIssuesTable issues={_.sortBy(this.props.issues, 'request_type_title')} slas={_.sortBy(this.props.slas, 'type')} />
       </div>
     );
   }

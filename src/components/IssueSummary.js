@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import Card, { CardHeader, CardContent } from 'material-ui/Card';
+
 import IssueChart from './IssueChart';
+import Helpers from '../helpers';
 
 class IssueSummary extends Component {
   constructor(props) {
@@ -25,7 +27,7 @@ class IssueSummary extends Component {
     .then(res => res.json())
     .then(d => {
       this.setState({
-        data: d,
+        data: Helpers.checkSla(d, type),
         fetchedData: true,
       });
     })
@@ -76,8 +78,29 @@ class IssueSummary extends Component {
               </CardContent>
             </Card>
           </div>
-        : null }
-        { this.state.fetchedData ? <IssueChart data={this.state.data} /> : null }
+          : null }
+        {(Helpers.slas[this.props.type] > 0 && this.state.fetchedData) ? 
+          <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', }}>
+            <Card style={{ margin: '1em', backgroundColor: '#f1f1f1' }}>
+              <CardHeader title="Service Level Agreement" />
+              <CardContent style={{ fontSize: '1.5em', fontWeight: 700 }}>
+                {Helpers.slas[this.props.type]} days
+              </CardContent>
+            </Card>
+            <Card style={{ margin: '1em', backgroundColor: '#f1f1f1' }}>
+              <CardHeader title="Tickets closed within SLA" />
+              <CardContent style={{ fontSize: '1.5em', }}>
+                <span style={{ marginRight: '.25em', fontWeight: 700 }}>
+                  {_.sumBy(this.state.data, 'closed_within_sla')}
+                </span>
+                <span style={{ color: '#878787' }}>
+                  ({_.round((_.sumBy(this.state.data, 'closed_within_sla')/this.props.summary.closed_count)*100, 1)}%)
+                </span>
+              </CardContent>
+            </Card>
+          </div>
+          : null}
+        {this.state.fetchedData ? <IssueChart data={this.state.data} /> : null}
       </div>
     );
   }

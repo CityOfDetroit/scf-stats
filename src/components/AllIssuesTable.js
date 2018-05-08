@@ -6,29 +6,33 @@ import Helpers from '../helpers';
 
 class AllIssuesTable extends Component {
   render() {
+    // each should be sorted by request type before merging
+    let combinedData = _.merge(this.props.issues, this.props.slas)
 
     return (
       <Table style={{ marginTop: '1em' }}>
-        <TableHead >
-          <TableRow>
+        <TableHead>
+          <TableRow style={{ backgroundColor: '#eee' }}>
             <TableCell style={{ fontSize: '1em', color: '#000', fontWeight: 700 }}>Issue type</TableCell>
-            <TableCell numeric style={{ fontSize: '1em', color: '#000' }}>Service Level Agreement (days)</TableCell>
-            <TableCell numeric style={{ fontSize: '1em', color: '#000' }}>Tickets opened</TableCell>
-            <TableCell numeric style={{ fontSize: '1em', color: '#000' }}>Tickets closed</TableCell>
-            <TableCell numeric style={{ fontSize: '1em', color: '#000' }}>Average days to close</TableCell>
-            <TableCell numeric style={{ fontSize: '1em', color: '#000' }}>Tickets reopened</TableCell>
+            <TableCell numeric style={{ fontSize: '.9em', color: '#000', fontWeight: 700 }}>Tickets opened</TableCell>
+            <TableCell numeric style={{ fontSize: '.9em', color: '#000', fontWeight: 700 }}>Tickets closed</TableCell>
+            <TableCell numeric style={{ fontSize: '.9em', color: '#000', fontWeight: 700, borderRight: '1px solid #eee' }}>Tickets reopened</TableCell>
+            <TableCell numeric style={{ fontSize: '.9em', color: '#000', fontWeight: 700 }}>Average time to close</TableCell>
+            <TableCell numeric style={{ fontSize: '.9em', color: '#000', fontWeight: 700 }}>Service Level Agreement</TableCell>
+            <TableCell numeric style={{ fontSize: '.9em', color: '#000', fontWeight: 700 }}>Tickets closed within SLA</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {this.props.issues.map(i => {
+          {combinedData.map(i => {
             return (
               <TableRow key={i.request_type_title}>
-                <TableCell>{i.request_type_title}</TableCell>
-                <TableCell numeric>{Helpers.slas[i.request_type_title]}</TableCell>
-                <TableCell numeric>{i.created_count}</TableCell>
-                <TableCell numeric>{i.closed_count}</TableCell>
-                <TableCell numeric>{ i.avg_days_to_close > 0 ? _.round(i.avg_days_to_close, 2) : null }</TableCell>
-                <TableCell numeric>{i.reopened_count}</TableCell>
+                <TableCell style={{ fontSize: '.9em' }}>{i.request_type_title}</TableCell>
+                <TableCell style={{ fontSize: '.9em' }} numeric>{i.created_count}</TableCell>
+                <TableCell style={{ fontSize: '.9em' }} numeric>{i.closed_count}</TableCell>
+                <TableCell style={{ fontSize: '.9em', borderRight: '1px solid #eee' }} numeric>{i.reopened_count}</TableCell>
+                <TableCell style={{ fontSize: '.9em' }} numeric>{i.avg_days_to_close > 0 ? `${_.round(i.avg_days_to_close, 2)} days` : null}</TableCell>
+                <TableCell style={{ fontSize: '.9em' }} numeric>{Helpers.slas[i.request_type_title] > 0 ? `${Helpers.slas[i.request_type_title]} days` : null}</TableCell>
+                <TableCell style={{ fontSize: '.9em' }} numeric>{i.closed_within_sla > 0 && i.closed_count > 0 ? `${_.round((i.closed_within_sla/i.closed_count)*100, 1)}%` : null}</TableCell>
               </TableRow>
             );
           })}
