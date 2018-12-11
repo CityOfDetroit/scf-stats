@@ -7,7 +7,7 @@ class TopNav extends Component {
   render() {
     return (
       <div style={{ flexGrow: 1 }}>
-        <AppBar position="static" color="primary">
+        <AppBar position="static" color="white" style={{ borderBottom: '4px solid #feb70d' }}>
           <Toolbar>
             <Typography variant="title" color="inherit" style={{ fontSize: '2em' }}>
               <strong>Improve Detroit</strong>
