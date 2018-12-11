@@ -11,8 +11,6 @@ class AllIssuesTable extends Component {
       ...this.props.slas.find(s => s.type === i.request_type_title) 
     }));
 
-    console.log(combinedData);
-
     return (
       <Table style={{ marginTop: '1em' }}>
         <TableHead>
