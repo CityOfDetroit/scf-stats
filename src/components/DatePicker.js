@@ -1,21 +1,27 @@
 import React, { Component } from 'react';
-import Radio, { RadioGroup } from 'material-ui/Radio';
-import { FormControl, FormControlLabel } from 'material-ui/Form';
+import moment from 'moment';
+import { DateRangePicker, isInclusivelyAfterDay } from 'react-dates';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
 
 class DatePicker extends Component {
   render() {
     return (
-      <FormControl component="fieldset">
-        <RadioGroup
-          name="timeframe"
-          value={this.props.weeks.toString()}
-          onChange={this.props.onChange}
-          style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-          <FormControlLabel value="1" control={<Radio />} label="Last week" />
-          <FormControlLabel value="3" control={<Radio />} label="Last 3 weeks" />
-          <FormControlLabel value="6" control={<Radio />} label="Last 6 weeks" />
-        </RadioGroup>
-      </FormControl>
+      <DateRangePicker
+        startDateId="startDate"
+        startDate={this.props.start}
+        endDateId="endDate"
+        endDate={this.props.end}
+        onDatesChange={this.props.onDatesChange}
+        focusedInput={this.props.focus}
+        onFocusChange={this.props.onFocusChange} 
+        isOutsideRange={day => isInclusivelyAfterDay(day, moment().add(0, 'day'))}
+        minimumNights={1}
+        showClearDates={false}
+        block={false}
+        small={true}
+        noBorder={true}
+      />
     );
   }
 }

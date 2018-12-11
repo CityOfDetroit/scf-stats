@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 import Card, { CardHeader, CardContent } from 'material-ui/Card';
 
 import IssueChart from './IssueChart';
@@ -23,7 +24,7 @@ class IssueSummary extends Component {
    * @returns {promise}
    */
   fetchIssuesByType(type, start, end) {
-    fetch(`https://data.detroitmi.gov/resource/a9kb-mhiu.json?$limit=50000&$where=request_type_title = '${type}' AND created_at between '${start}' and '${end}'`)
+    fetch(`https://data.detroitmi.gov/resource/a9kb-mhiu.json?$limit=50000&$where=request_type_title = '${type}' AND created_at between '${moment(start).format('YYYY-MM-DD')}' and '${moment(end).format('YYYY-MM-DD')}'`)
     .then(res => res.json())
     .then(d => {
       this.setState({
