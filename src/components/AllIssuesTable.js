@@ -6,8 +6,12 @@ import Helpers from '../helpers';
 
 class AllIssuesTable extends Component {
   render() {
-    // each should be sorted by request type before merging
-    let combinedData = _.merge(this.props.issues, this.props.slas)
+    const combinedData = this.props.issues.map(i => ({
+      ...i,
+      ...this.props.slas.find(s => s.type === i.request_type_title) 
+    }));
+
+    console.log(combinedData);
 
     return (
       <Table style={{ marginTop: '1em' }}>
