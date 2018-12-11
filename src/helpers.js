@@ -69,8 +69,13 @@ const Helpers = {
   addSla: function(data) {
     data.map(d => {
       let sla = this.slas[d.request_type_title];
+      d.sla = sla;
+
+      // add a new key/value pair to data where 1 is closed within sla, 0 is not
       if (d.days_to_close < sla) {
-        d.closed_within_sla = 1
+        d.closed_within_sla = 1;
+      } else {
+        d.closed_within_sla = 0
       }
 
       return d;
@@ -78,7 +83,7 @@ const Helpers = {
 
     return _.chain(data)
       .groupBy(d => d['request_type_title'])
-      .map((v, k) => ({ type: k, closed_within_sla: _.sumBy(v, 'closed_within_sla') }))
+      .map((v, k) => ({ type: k, closed_within_sla: _.sumBy(v, 'closed_within_sla'), sla: 'dummy' }))
       .value();
   }
 };
