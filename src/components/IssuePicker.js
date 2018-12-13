@@ -10,7 +10,7 @@ class IssuePicker extends Component {
         <Select
           value={this.props.default}
           onChange={this.props.onChange}
-          style={{ minWidth: 300 }}>
+          style={{ minWidth: 300, fontSize: '.9em' }}>
           <MenuItem value="*">All Issue Types</MenuItem>
           {this.props.issues.map(i => (
             <MenuItem key={i.request_type_title} value={i.request_type_title}>{i.request_type_title}</MenuItem>

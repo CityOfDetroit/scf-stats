@@ -19,8 +19,8 @@ class App extends Component {
 
     this.state = {
       defaultIssueType: '*',
-      startDate: moment().subtract(2, 'week'), // two weeks ago
-      endDate: moment().subtract(1, 'day'), // yesterday
+      startDate: moment().subtract(2, 'week').startOf('week'), // two weeks ago Sunday
+      endDate: moment().subtract(1, 'week').endOf('week'), // last Saturday
       data: [],
       slaData: [],
       fetchedData: false,
@@ -92,7 +92,7 @@ class App extends Component {
             <AppBar position="static" elevation={1} color="default">
               <Toolbar style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', alignItems: 'flex-start', marginTop: '1em', marginBottom: '1em' }}>
                 <div>
-                  <Typography variant="title" color="inherit">
+                  <Typography variant="subheading" color="inherit">
                     Pick an issue type and timeframe for analysis:
                   </Typography>
                 </div>
@@ -102,10 +102,10 @@ class App extends Component {
                 </div>
               </Toolbar>
             </AppBar>
-            <Typography variant="title" color="inherit" style={{ margin: '1em' }}>
+            <Typography variant="subheading" color="inherit" style={{ margin: '1em' }}>
               Showing <strong>{ this.state.defaultIssueType === '*' ? 
                 'All Issue Types' 
-                : `${this.state.defaultIssueType}` }</strong> from {moment(this.state.startDate).format("MM-DD-YYYY")} to {moment(this.state.endDate).format("MM-DD-YYYY")}
+                : `${this.state.defaultIssueType}` }</strong> from {moment(this.state.startDate).format("dddd MM/DD/YYYY")} to {moment(this.state.endDate).format("dddd MM/DD/YYYY")}:
             </Typography>
           </div>
         : <p>Loading...</p> }

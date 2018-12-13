@@ -45,7 +45,7 @@ class IssueChart extends Component {
     };
 
     let createdDays = _.groupBy(this.props.data, function(d) {
-      return moment(d['created_at']).format('MM-DD-YY');
+      return moment(d['created_at']).format('MM/DD/YY');
     });
 
     let res = _.map(createdDays, function(group, day) {
@@ -80,7 +80,7 @@ class IssueChart extends Component {
       }],
       tooltip: {
         formatter: function() {
-          return this.y + ' tickets opened on ' + moment(this.x).format('dddd MM-DD-YYYY')
+          return this.y + ' tickets opened on ' + moment(this.x).format('dddd MM/DD/YYYY')
         }
       },
       legend: {
