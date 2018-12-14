@@ -18,26 +18,27 @@ class App extends Component {
     super(props);
 
     this.state = {
-      defaultWeeks: 3,
       defaultIssueType: '*',
-      startDate: '',
-      endDate: '',
+      startDate: moment().subtract(2, 'week').startOf('week'), // two weeks ago Sunday
+      endDate: moment().subtract(1, 'week').endOf('week'), // last Saturday
       data: [],
       slaData: [],
       fetchedData: false,
       fetchedSlaData: false,
+      focus: null
     }
 
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleIssueTypeChange = this.handleIssueTypeChange.bind(this);
+    this.handleFocusChange = this.handleFocusChange.bind(this);
   }
 
-  handleDateChange = event => {
-    if (event.target.value) {
-      this.fetchIssuesSummary(event.target.value);
-      this.fetchSlas(event.target.value);
+  handleDateChange({ startDate, endDate }) {
+    if (startDate && endDate) {
+      this.fetchIssuesSummary(startDate, endDate);
+      this.fetchSlas(startDate, endDate);
 
-      this.setState({ defaultWeeks: event.target.value });
+      this.setState({ startDate, endDate });
     }
   }
 
@@ -47,16 +48,15 @@ class App extends Component {
     }
   }
 
-  fetchIssuesSummary(numWeeks) {
-    let start = moment().subtract(numWeeks, 'week').format('YYYY-MM-DD');
-    let end = moment().subtract(1, 'day').format('YYYY-MM-DD');
+  handleFocusChange(focus) {
+    this.setState({ focus });
+  }
 
-    fetch(`https://data.detroitmi.gov/resource/a9kb-mhiu.json?$query=SELECT request_type_title, COUNT(created_at) AS created_count, COUNT(closed_at) AS closed_count, AVG(days_to_close) AS avg_days_to_close, COUNT(reopened_at) as reopened_count WHERE created_at between '${start}' and '${end}' GROUP BY request_type_title`)
+  fetchIssuesSummary(start, end) {
+    fetch(`https://data.detroitmi.gov/resource/a9kb-mhiu.json?$query=SELECT request_type_title, COUNT(created_at) AS created_count, COUNT(closed_at) AS closed_count, AVG(days_to_close) AS avg_days_to_close, COUNT(reopened_at) as reopened_count WHERE created_at between '${moment(start).format('YYYY-MM-DD')}' and '${moment(end).format('YYYY-MM-DD')}' GROUP BY request_type_title`)
     .then(res => res.json())
     .then(d => {
       this.setState({
-        startDate: start,
-        endDate: end,
         data: _.sortBy(d, d => d.request_type_title),
         fetchedData: true,
       });
@@ -64,16 +64,11 @@ class App extends Component {
     .catch(e => console.log(e));
   }
 
-  fetchSlas(numWeeks) {
-    let start = moment().subtract(numWeeks, 'week').format('YYYY-MM-DD');
-    let end = moment().subtract(1, 'day').format('YYYY-MM-DD');
-
-    fetch(`https://data.detroitmi.gov/resource/a9kb-mhiu.json?$query=SELECT request_type_title, days_to_close WHERE closed_at is not null and created_at between '${start}' and '${end}' limit 10000`)
+  fetchSlas(start, end) {
+    fetch(`https://data.detroitmi.gov/resource/a9kb-mhiu.json?$query=SELECT request_type_title, days_to_close WHERE closed_at is not null and created_at between '${moment(start).format('YYYY-MM-DD')}' and '${moment(end).format('YYYY-MM-DD')}' limit 10000`)
     .then(res => res.json())
     .then(d => {
       this.setState({
-        startDate: start,
-        endDate: end,
         slaData: Helpers.addSla(d),
         fetchedSlaData: true,
       });
@@ -82,8 +77,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.fetchIssuesSummary(this.state.defaultWeeks);
-    this.fetchSlas(this.state.defaultWeeks);
+    this.fetchIssuesSummary(this.state.startDate, this.state.endDate);
+    this.fetchSlas(this.state.startDate, this.state.endDate);
   }
 
   render() {
@@ -97,20 +92,20 @@ class App extends Component {
             <AppBar position="static" elevation={1} color="default">
               <Toolbar style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', alignItems: 'flex-start', marginTop: '1em', marginBottom: '1em' }}>
                 <div>
-                  <Typography variant="title" color="inherit">
+                  <Typography variant="subheading" color="inherit">
                     Pick an issue type and timeframe for analysis:
                   </Typography>
                 </div>
                 <div style={{ marginTop: '1em' }}>
                   <IssuePicker default={this.state.defaultIssueType} issues={this.state.data} onChange={this.handleIssueTypeChange} />
-                  <DatePicker weeks={this.state.defaultWeeks} onChange={this.handleDateChange} />
+                  <DatePicker start={this.state.startDate} end={this.state.endDate} onDatesChange={this.handleDateChange} focus={this.state.focus} onFocusChange={this.handleFocusChange} />
                 </div>
               </Toolbar>
             </AppBar>
-            <Typography variant="title" color="inherit" style={{ margin: '1em' }}>
+            <Typography variant="subheading" color="inherit" style={{ margin: '1em' }}>
               Showing <strong>{ this.state.defaultIssueType === '*' ? 
                 'All Issue Types' 
-                : `${this.state.defaultIssueType}` }</strong> from {moment(this.state.startDate, "YYYY-MM-DD").format("MM-DD-YY")} to {moment(this.state.endDate, "YYYY-MM-DD").format("MM-DD-YY")}
+                : `${this.state.defaultIssueType}` }</strong> from {moment(this.state.startDate).format("dddd MM/DD/YYYY")} to {moment(this.state.endDate).format("dddd MM/DD/YYYY")}:
             </Typography>
           </div>
         : <p>Loading...</p> }
