@@ -41,7 +41,7 @@ class IssueChart extends Component {
       credits: {
         enabled: false
       },
-      colors: ['#3f51b5']
+      colors: ['#9FD5B3']
     };
 
     let createdDays = _.groupBy(this.props.data, function(d) {
@@ -89,7 +89,7 @@ class IssueChart extends Component {
       credits: {
         enabled: false
       },
-      colors: ['#f50057']
+      colors: ['#279989']
     };
 
     return (
