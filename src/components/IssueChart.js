@@ -3,6 +3,7 @@ import ReactHighcharts from 'react-highcharts';
 import _ from 'lodash';
 import Card, { CardHeader, CardContent } from 'material-ui/Card';
 import moment from 'moment';
+import numeral from 'numeral';
 
 class IssueChart extends Component {
   render() {
@@ -39,7 +40,7 @@ class IssueChart extends Component {
       }],
       tooltip: {
         formatter: function() {
-          return this.y + ' tickets opened in District ' + this.x
+          return numeral(this.y).format('0,0') + ' tickets opened in District ' + this.x
         }
       },
       legend: {

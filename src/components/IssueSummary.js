@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 import Card, { CardHeader, CardContent } from 'material-ui/Card';
+import numeral from 'numeral';
 
 import IssueChart from './IssueChart';
 import Helpers from '../helpers';
@@ -53,14 +54,14 @@ class IssueSummary extends Component {
             <Card style={{ margin: '1em' }}>
               <CardHeader title="Tickets opened" />
               <CardContent style={{ fontSize: '1.5em', fontWeight: 700 }}>
-                {this.props.summary.created_count}
+                {numeral(this.props.summary.created_count).format('0,0')}
               </CardContent>
             </Card>
             <Card style={{ margin: '1em' }}>
               <CardHeader title="Tickets closed" />
               <CardContent style={{ fontSize: '1.5em' }}>
                 <span style={{ marginRight: '.25em', fontWeight: 700 }}>
-                  {this.props.summary.closed_count}
+                  {numeral(this.props.summary.closed_count).format('0,0')}
                 </span>
                 <span style={{ color: '#878787' }}>
                   ({_.round((this.props.summary.closed_count/this.props.summary.created_count)*100, 2)}%)
@@ -71,7 +72,7 @@ class IssueSummary extends Component {
               <CardHeader title="Tickets reopened" />
               <CardContent style={{ fontSize: '1.5em' }}>
                 <span style={{ marginRight: '.25em', fontWeight: 700 }}>
-                  {this.props.summary.reopened_count}
+                  {numeral(this.props.summary.reopened_count).format('0,0')}
                 </span>
                 <span style={{ color: '#878787' }}>
                   ({_.round((this.props.summary.reopened_count/this.props.summary.created_count)*100, 2)}%)
@@ -92,7 +93,7 @@ class IssueSummary extends Component {
               <CardHeader title="Tickets closed within SLA" />
               <CardContent style={{ fontSize: '1.5em', }}>
                 <span style={{ marginRight: '.25em', fontWeight: 700 }}>
-                  {_.sumBy(this.state.data, 'closed_within_sla')}
+                  {numeral(_.sumBy(this.state.data, 'closed_within_sla')).format('0,0')}
                 </span>
                 <span style={{ color: '#878787' }}>
                   ({_.round((_.sumBy(this.state.data, 'closed_within_sla')/this.props.summary.closed_count)*100, 1)}%)

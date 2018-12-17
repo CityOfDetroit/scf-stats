@@ -45,4 +45,4 @@ class AllIssuesTable extends Component {
   }
 }
 
-export default AllIssuesTable; 
+export default AllIssuesTable;
