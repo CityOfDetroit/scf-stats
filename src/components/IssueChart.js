@@ -6,6 +6,13 @@ import moment from 'moment';
 
 class IssueChart extends Component {
   render() {
+     // use map instead of Object.values()
+    let summaryData = _.countBy(this.props.data, 'council_district')
+    let byDistrictValues = Object.keys(summaryData).map(function(key) {
+      return summaryData[key];
+    });
+
+    // bar chart by council district config
     let byPlaceConfig = {
       chart: {
         type: 'column'
@@ -28,7 +35,7 @@ class IssueChart extends Component {
         }
       },
       series: [{
-        data: Object.values(_.countBy(this.props.data, 'council_district'))
+        data: byDistrictValues
       }],
       tooltip: {
         formatter: function() {
@@ -57,6 +64,7 @@ class IssueChart extends Component {
 
     res = _.sortBy(res, 'day');
 
+    // line chart by date opened config
     let byDateConfig = {
       chart: {
         type: 'line'
