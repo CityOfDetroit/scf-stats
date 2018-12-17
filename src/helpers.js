@@ -3,7 +3,7 @@ import _ from 'lodash';
 const Helpers = {
     /** Issue types and their Service Level Agreements for number of days to close */
     slas: {
-    "Abandoned Vehicles": 7,
+    "Abandoned Vehicle": 7,
     "Blocked Catch Basin": 15,
     "Cemetery Issue": 5,
     "Curbside Solid Waste Issue": 10,
@@ -26,7 +26,7 @@ const Helpers = {
     "Street Light Pole Down": 5,
     "Street Light / Street Light Pole Major Repair": 30,
     "Traffic Sign Issue": 7,
-    "Traffic Signal Issue": 2,
+    "Traffic Signal Issue": 3,
     "Tree Issue": 14,
     "Water Main Break": 4,
     "Other - Not within City jurisdiction": null,
