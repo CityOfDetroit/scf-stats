@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import _ from 'lodash';
-import moment from 'moment';
-import Card, { CardHeader, CardContent } from 'material-ui/Card';
-import numeral from 'numeral';
+import _ from "lodash";
+import Card, { CardContent, CardHeader } from "material-ui/Card";
+import moment from "moment";
+import numeral from "numeral";
+import React, { Component } from "react";
 
-import IssueChart from './IssueChart';
-import Helpers from '../helpers';
+import Helpers from "../helpers";
+import IssueChart from "./IssueChart";
 
 class IssueSummary extends Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class IssueSummary extends Component {
     this.state = {
       data: [],
       fetchedData: false
-    }
+    };
   }
 
   /**
@@ -25,15 +25,24 @@ class IssueSummary extends Component {
    * @returns {promise}
    */
   fetchIssuesByType(type, start, end) {
-    fetch(`https://data.detroitmi.gov/resource/a9kb-mhiu.json?$limit=50000&$where=request_type_title = '${type}' AND created_at between '${moment(start).format('YYYY-MM-DD')}' and '${moment(end).format('YYYY-MM-DD')}'`)
-    .then(res => res.json())
-    .then(d => {
-      this.setState({
-        data: Helpers.checkSla(d, type),
-        fetchedData: true,
-      });
-    })
-    .catch(e => console.log(e));
+    fetch(
+      `https://services2.arcgis.com/qvkbeam7Wirps6zC/arcgis/rest/services/improve_detroit_issues/FeatureServer/0/query?where=request_type_title%3D%27${type}%27+and+created_at+between+%27${moment(
+        start
+      ).format("YYYY-MM-DD")}%27+and+%27${moment(end).format(
+        "YYYY-MM-DD"
+      )}%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=json&token=`
+    )
+      .then(res => res.json())
+      .then(d => {
+        this.setState({
+          data: Helpers.checkSla(
+            d.features.map(f => f.attributes),
+            type
+          ),
+          fetchedData: true
+        });
+      })
+      .catch(e => console.log(e));
   }
 
   componentDidMount() {
@@ -49,59 +58,45 @@ class IssueSummary extends Component {
   render() {
     return (
       <div>
-        {this.props.summary ?
-          <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', }}>
-            <Card style={{ margin: '1em' }}>
+        {this.props.summary ? (
+          <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+            <Card style={{ margin: "1em" }}>
               <CardHeader title="Tickets opened" />
-              <CardContent style={{ fontSize: '1.5em', fontWeight: 700 }}>
-                {numeral(this.props.summary.created_count).format('0,0')}
-              </CardContent>
+              <CardContent style={{ fontSize: "1.5em", fontWeight: 700 }}>{numeral(this.props.summary.created_count).format("0,0")}</CardContent>
             </Card>
-            <Card style={{ margin: '1em' }}>
+            <Card style={{ margin: "1em" }}>
               <CardHeader title="Tickets closed" />
-              <CardContent style={{ fontSize: '1.5em' }}>
-                <span style={{ marginRight: '.25em', fontWeight: 700 }}>
-                  {numeral(this.props.summary.closed_count).format('0,0')}
-                </span>
-                <span style={{ color: '#878787' }}>
-                  ({_.round((this.props.summary.closed_count/this.props.summary.created_count)*100, 2)}%)
-                </span>
+              <CardContent style={{ fontSize: "1.5em" }}>
+                <span style={{ marginRight: ".25em", fontWeight: 700 }}>{numeral(this.props.summary.closed_count).format("0,0")}</span>
+                <span style={{ color: "#878787" }}>({_.round((this.props.summary.closed_count / this.props.summary.created_count) * 100, 2)}%)</span>
               </CardContent>
             </Card>
-            <Card style={{ margin: '1em' }}>
+            <Card style={{ margin: "1em" }}>
               <CardHeader title="Tickets reopened" />
-              <CardContent style={{ fontSize: '1.5em' }}>
-                <span style={{ marginRight: '.25em', fontWeight: 700 }}>
-                  {numeral(this.props.summary.reopened_count).format('0,0')}
-                </span>
-                <span style={{ color: '#878787' }}>
-                  ({_.round((this.props.summary.reopened_count/this.props.summary.created_count)*100, 2)}%)
-                </span>
+              <CardContent style={{ fontSize: "1.5em" }}>
+                <span style={{ marginRight: ".25em", fontWeight: 700 }}>{numeral(this.props.summary.reopened_count).format("0,0")}</span>
+                <span style={{ color: "#878787" }}>({_.round((this.props.summary.reopened_count / this.props.summary.created_count) * 100, 2)}%)</span>
               </CardContent>
             </Card>
           </div>
-          : null }
-        {(Helpers.slas[this.props.type] > 0 && this.state.fetchedData) ? 
-          <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', }}>
-            <Card style={{ margin: '1em', backgroundColor: '#f5f5f5' }}>
+        ) : null}
+        {Helpers.slas[this.props.type] > 0 && this.state.fetchedData ? (
+          <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+            <Card style={{ margin: "1em", backgroundColor: "#f5f5f5" }}>
               <CardHeader title="Service Level Agreement" />
-              <CardContent style={{ fontSize: '1.5em', fontWeight: 700 }}>
-                {Helpers.slas[this.props.type]} days
-              </CardContent>
+              <CardContent style={{ fontSize: "1.5em", fontWeight: 700 }}>{Helpers.slas[this.props.type]} days</CardContent>
             </Card>
-            <Card style={{ margin: '1em', backgroundColor: '#f5f5f5' }}>
+            <Card style={{ margin: "1em", backgroundColor: "#f5f5f5" }}>
               <CardHeader title="Tickets closed within SLA" />
-              <CardContent style={{ fontSize: '1.5em', }}>
-                <span style={{ marginRight: '.25em', fontWeight: 700 }}>
-                  {numeral(_.sumBy(this.state.data, 'closed_within_sla')).format('0,0')}
-                </span>
-                <span style={{ color: '#878787' }}>
-                  ({_.round((_.sumBy(this.state.data, 'closed_within_sla')/this.props.summary.closed_count)*100, 1)}%)
+              <CardContent style={{ fontSize: "1.5em" }}>
+                <span style={{ marginRight: ".25em", fontWeight: 700 }}>{numeral(_.sumBy(this.state.data, "closed_within_sla")).format("0,0")}</span>
+                <span style={{ color: "#878787" }}>
+                  ({_.round((_.sumBy(this.state.data, "closed_within_sla") / this.props.summary.closed_count) * 100, 1)}%)
                 </span>
               </CardContent>
             </Card>
           </div>
-          : null}
+        ) : null}
         {this.state.fetchedData ? <IssueChart data={this.state.data} /> : null}
       </div>
     );
