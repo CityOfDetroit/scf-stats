@@ -89,7 +89,7 @@ class App extends Component {
       .then(res => res.json())
       .then(d => {
         this.setState({
-          slaData: Helpers.addSla(d),
+          slaData: Helpers.addSla(d.features),
           fetchedSlaData: true
         });
       })

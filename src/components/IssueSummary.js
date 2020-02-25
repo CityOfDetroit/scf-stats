@@ -25,8 +25,12 @@ class IssueSummary extends Component {
    * @returns {promise}
    */
   fetchIssuesByType(type, start, end) {
+    let whereClause = `1=1`;
+    if (type !== "*") {
+      whereClause = `request_type_title%3D%27${type}%27`;
+    }
     fetch(
-      `https://services2.arcgis.com/qvkbeam7Wirps6zC/arcgis/rest/services/improve_detroit_issues/FeatureServer/0/query?where=request_type_title%3D%27${type}%27+and+created_at+between+%27${moment(
+      `https://services2.arcgis.com/qvkbeam7Wirps6zC/arcgis/rest/services/improve_detroit_issues/FeatureServer/0/query?where=${whereClause}+and+created_at+between+%27${moment(
         start
       ).format("YYYY-MM-DD")}%27+and+%27${moment(end).format(
         "YYYY-MM-DD"
@@ -34,6 +38,7 @@ class IssueSummary extends Component {
     )
       .then(res => res.json())
       .then(d => {
+        console.log(d);
         this.setState({
           data: Helpers.checkSla(
             d.features.map(f => f.attributes),
@@ -51,6 +56,7 @@ class IssueSummary extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.type !== nextProps.type || this.props.start !== nextProps.start) {
+      this.setState({ fetchedData: false });
       this.fetchIssuesByType(nextProps.type, nextProps.start, nextProps.end);
     }
   }

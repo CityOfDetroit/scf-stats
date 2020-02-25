@@ -1,8 +1,8 @@
-import _ from 'lodash';
+import _ from "lodash";
 
 const Helpers = {
-    /** Issue types and their Service Level Agreements for number of days to close */
-    slas: {
+  /** Issue types and their Service Level Agreements for number of days to close */
+  slas: {
     "Abandoned Vehicle": 7,
     "Blocked Catch Basin": 15,
     "Cemetery Issue": 5,
@@ -16,7 +16,7 @@ const Helpers = {
     "Manhole Cover Issue": 5,
     "New LED Street Light Out": 7,
     "Park Issue": 5,
-    "Potholes": 5,
+    Potholes: 5,
     "Residential Snow Removal Issue": 1,
     "Rodent Extermination - BSEED Only": null,
     "Running Water in a Home or Building": 4,
@@ -31,10 +31,10 @@ const Helpers = {
     "Water Main Break": 4,
     "Other - Not within City jurisdiction": null,
     "Other - Not within scope of City services": null,
-    "Other - Referred to other City Department": null,
+    "Other - Referred to other City Department": null
   },
 
-   /**
+  /**
    * Get unique values for a specific key and sum their occurances for making charts
    * @param {array} data - 311 tickets json
    * @param {string} key - object key in tickets json to group by
@@ -72,18 +72,18 @@ const Helpers = {
       d.sla = sla;
 
       // add a new key/value pair to data where 1 is closed within sla, 0 is not
-      if (d.days_to_close < sla) {
-        d.closed_within_sla = 1;
+      if (d.attributes.days_to_close < sla) {
+        d.attributes.closed_within_sla = 1;
       } else {
-        d.closed_within_sla = 0
+        d.attributes.closed_within_sla = 0;
       }
 
       return d;
     });
 
     return _.chain(data)
-      .groupBy(d => d['request_type_title'])
-      .map((v, k) => ({ type: k, closed_within_sla: _.sumBy(v, 'closed_within_sla'), sla: 'dummy' }))
+      .groupBy(d => d["request_type_title"])
+      .map((v, k) => ({ type: k, closed_within_sla: _.sumBy(v, "closed_within_sla"), sla: "dummy" }))
       .value();
   }
 };
