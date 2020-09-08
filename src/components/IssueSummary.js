@@ -30,7 +30,7 @@ class IssueSummary extends Component {
       whereClause = `request_type_title%3D%27${type}%27`;
     }
     fetch(
-      `https://services2.arcgis.com/qvkbeam7Wirps6zC/arcgis/rest/services/improve_detroit_issues/FeatureServer/0/query?where=${whereClause}+and+created_at+between+%27${moment(
+      `https://opengis.detroitmi.gov/opengis/rest/services/DoIT/ImproveDetroitIssues/FeatureServer/0/query?where=${whereClause}+and+created_at+between+%27${moment(
         start
       ).format("YYYY-MM-DD")}%27+and+%27${moment(end).format(
         "YYYY-MM-DD"

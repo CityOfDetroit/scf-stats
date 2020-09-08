@@ -59,7 +59,7 @@ class App extends Component {
 
   fetchIssuesSummary(start, end) {
     fetch(
-      `https://services2.arcgis.com/qvkbeam7Wirps6zC/arcgis/rest/services/improve_detroit_issues/FeatureServer/0/query?where=created_at+between+%27${moment(
+      `https://opengis.detroitmi.gov/opengis/rest/services/DoIT/ImproveDetroitIssues/FeatureServer/0/query?where=created_at+between+%27${moment(
         start
       ).format("YYYY-MM-DD")}%27+and+%27${moment(end).format(
         "YYYY-MM-DD"
@@ -80,11 +80,11 @@ class App extends Component {
 
   fetchSlas(start, end) {
     fetch(
-      `https://services2.arcgis.com/qvkbeam7Wirps6zC/arcgis/rest/services/improve_detroit_issues/FeatureServer/0/query?where=created_at+between+%27${moment(
+      `https://opengis.detroitmi.gov/opengis/rest/services/DoIT/ImproveDetroitIssues/FeatureServer/0/query?where=created_at+between+%27${moment(
         start
       ).format("YYYY-MM-DD")}%27+and+%27${moment(end).format(
         "YYYY-MM-DD"
-      )}%27+and+closed_at+is+not+null&outFields=request_type_title%2C+days_to_close&returnGeometry=true&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=json&token=`
+      )}%27+and+closed_at+is+not+null&outFields=request_type_title%2C+days_to_close&f=json`
     )
       .then(res => res.json())
       .then(d => {
